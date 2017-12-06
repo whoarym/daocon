@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS tbl_book2tag;
+DROP TABLE IF EXISTS tbl_book;
+DROP TABLE IF EXISTS tbl_tag;
+DROP TABLE IF EXISTS tbl_owner;
+DROP TABLE IF EXISTS tbl_publisher;
+DROP TABLE IF EXISTS tbl_author;

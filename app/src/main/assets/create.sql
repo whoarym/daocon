@@ -1,0 +1,16 @@
+CREATE TABLE tbl_author (_id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+CREATE INDEX idx_author_name ON tbl_author (name);
+CREATE TABLE tbl_owner (_id INTEGER PRIMARY KEY, first_name TEXT NOT NULL, last_name TEXT NOT NULL);
+CREATE TABLE tbl_publisher (_id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+CREATE INDEX idx_publisher_name ON tbl_publisher (name);
+CREATE TABLE tbl_tag (_id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);
+CREATE INDEX idx_tag_name ON tbl_tag (name);
+CREATE TABLE tbl_book2tag (book_id INTEGER NOT NULL, tag_id INTEGER NOT NULL, FOREIGN KEY(book_id) REFERENCES tbl_book(_id) ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY(tag_id) REFERENCES tbl_tag(_id) ON DELETE NO ACTION ON UPDATE NO ACTION);
+CREATE INDEX idx_book2tag_book_id ON tbl_book2tag (book_id);
+CREATE INDEX idx_book2tag_tag_id ON tbl_book2tag (tag_id);
+CREATE TABLE tbl_book (_id INTEGER PRIMARY KEY, name TEXT NOT NULL, annotation TEXT, year INTEGER NOT NULL, author_id INTEGER NOT NULL, publisher_id INTEGER NOT NULL, owner_id INTEGER, FOREIGN KEY(author_id) REFERENCES tbl_author(_id) ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY(publisher_id) REFERENCES tbl_publisher(_id) ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY(owner_id) REFERENCES tbl_owner(_id) ON DELETE NO ACTION ON UPDATE NO ACTION);
+CREATE INDEX idx_book_name ON tbl_book (name);
+CREATE INDEX idx_book_year ON tbl_book (year);
+CREATE INDEX idx_book_author ON tbl_book (author_id);
+CREATE INDEX idx_book_publisher ON tbl_book (publisher_id);
+CREATE INDEX idx_book_owner ON tbl_book (owner_id);

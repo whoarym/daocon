@@ -1,0 +1,342 @@
+[
+    {
+        "first_name": "Артём", 
+        "last_name": "Иванов"
+    }, 
+    {
+        "first_name": "Александр", 
+        "last_name": "Васильев"
+    }, 
+    {
+        "first_name": "Максим", 
+        "last_name": "Петров"
+    }, 
+    {
+        "first_name": "Даниил", 
+        "last_name": "Смирнов"
+    }, 
+    {
+        "first_name": "Дмитрий", 
+        "last_name": "Михайлов"
+    }, 
+    {
+        "first_name": "Иван", 
+        "last_name": "Фёдоров"
+    }, 
+    {
+        "first_name": "Кирилл", 
+        "last_name": "Соколов"
+    }, 
+    {
+        "first_name": "Никита", 
+        "last_name": "Яковлев"
+    }, 
+    {
+        "first_name": "Михаил", 
+        "last_name": "Попов"
+    }, 
+    {
+        "first_name": "Егор", 
+        "last_name": "Андреев"
+    }, 
+    {
+        "first_name": "Матвей", 
+        "last_name": "Алексеев"
+    }, 
+    {
+        "first_name": "Андрей", 
+        "last_name": "Александров"
+    }, 
+    {
+        "first_name": "Илья", 
+        "last_name": "Лебедев"
+    }, 
+    {
+        "first_name": "Алексей", 
+        "last_name": "Григорьев"
+    }, 
+    {
+        "first_name": "Роман", 
+        "last_name": "Степанов"
+    }, 
+    {
+        "first_name": "Сергей", 
+        "last_name": "Семёнов"
+    }, 
+    {
+        "first_name": "Владислав", 
+        "last_name": "Павлов"
+    }, 
+    {
+        "first_name": "Ярослав", 
+        "last_name": "Богданов"
+    }, 
+    {
+        "first_name": "Тимофей", 
+        "last_name": "Николаев"
+    }, 
+    {
+        "first_name": "Арсений", 
+        "last_name": "Дмитриев"
+    }, 
+    {
+        "first_name": "Денис", 
+        "last_name": "Егоров"
+    }, 
+    {
+        "first_name": "Владимир", 
+        "last_name": "Волков"
+    }, 
+    {
+        "first_name": "Павел", 
+        "last_name": "Кузнецов"
+    }, 
+    {
+        "first_name": "Глеб", 
+        "last_name": "Никитин"
+    }, 
+    {
+        "first_name": "Константин", 
+        "last_name": "Соловьёв"
+    }, 
+    {
+        "first_name": "Богдан", 
+        "last_name": "Тимофеев"
+    }, 
+    {
+        "first_name": "Евгений", 
+        "last_name": "Орлов"
+    }, 
+    {
+        "first_name": "Николай", 
+        "last_name": "Афанасьев"
+    }, 
+    {
+        "first_name": "Степан", 
+        "last_name": "Филиппов"
+    }, 
+    {
+        "first_name": "Захар", 
+        "last_name": "Сергеев"
+    }, 
+    {
+        "first_name": "Тимур", 
+        "last_name": "Захаров"
+    }, 
+    {
+        "first_name": "Марк", 
+        "last_name": "Матвеев"
+    }, 
+    {
+        "first_name": "Семён", 
+        "last_name": "Виноградов"
+    }, 
+    {
+        "first_name": "Фёдор", 
+        "last_name": "Кузьмин"
+    }, 
+    {
+        "first_name": "Георгий", 
+        "last_name": "Максимов"
+    }, 
+    {
+        "first_name": "Лев", 
+        "last_name": "Козлов"
+    }, 
+    {
+        "first_name": "Антон", 
+        "last_name": "Ильин"
+    }, 
+    {
+        "first_name": "Вадим", 
+        "last_name": "Герасимов"
+    }, 
+    {
+        "first_name": "Игорь", 
+        "last_name": "Марков"
+    }, 
+    {
+        "first_name": "Руслан", 
+        "last_name": "Новиков"
+    }, 
+    {
+        "first_name": "Вячеслав", 
+        "last_name": "Морозов"
+    }, 
+    {
+        "first_name": "Григорий", 
+        "last_name": "Романов"
+    }, 
+    {
+        "first_name": "Макар", 
+        "last_name": "Осипов"
+    }, 
+    {
+        "first_name": "Артур", 
+        "last_name": "Макаров"
+    }, 
+    {
+        "first_name": "Виктор", 
+        "last_name": "Зайцев"
+    }, 
+    {
+        "first_name": "Станислав", 
+        "last_name": "Беляев"
+    }, 
+    {
+        "first_name": "Савелий", 
+        "last_name": "Гаврилов"
+    }, 
+    {
+        "first_name": "Олег", 
+        "last_name": "Антонов"
+    }, 
+    {
+        "first_name": "Давид", 
+        "last_name": "Ефимов"
+    }, 
+    {
+        "first_name": "Леонид", 
+        "last_name": "Леонтьев"
+    }, 
+    {
+        "first_name": "Пётр", 
+        "last_name": "Давыдов"
+    }, 
+    {
+        "first_name": "Юрий", 
+        "last_name": "Гусев"
+    }, 
+    {
+        "first_name": "Виталий", 
+        "last_name": "Данилов"
+    }, 
+    {
+        "first_name": "Мирон", 
+        "last_name": "Киселёв"
+    }, 
+    {
+        "first_name": "Василий", 
+        "last_name": "Сорокин"
+    }, 
+    {
+        "first_name": "Всеволод", 
+        "last_name": "Тихомиров"
+    }, 
+    {
+        "first_name": "Елисей", 
+        "last_name": "Крылов"
+    }, 
+    {
+        "first_name": "Назар", 
+        "last_name": "Никифоров"
+    }, 
+    {
+        "first_name": "Родион", 
+        "last_name": "Кондратьев"
+    }, 
+    {
+        "first_name": "Марат", 
+        "last_name": "Кудрявцев"
+    }, 
+    {
+        "first_name": "Платон", 
+        "last_name": "Борисов"
+    }, 
+    {
+        "first_name": "Герман", 
+        "last_name": "Жуков"
+    }, 
+    {
+        "first_name": "Игнат", 
+        "last_name": "Воробьёв"
+    }, 
+    {
+        "first_name": "Святослав", 
+        "last_name": "Щербаков"
+    }, 
+    {
+        "first_name": "Анатолий", 
+        "last_name": "Поляков"
+    }, 
+    {
+        "first_name": "Тихон", 
+        "last_name": "Савельев"
+    }, 
+    {
+        "first_name": "Валерий", 
+        "last_name": "Шмидт"
+    }, 
+    {
+        "first_name": "Мирослав", 
+        "last_name": "Трофимов"
+    }, 
+    {
+        "first_name": "Ростислав", 
+        "last_name": "Чистяков"
+    }, 
+    {
+        "first_name": "Борис", 
+        "last_name": "Баранов"
+    }, 
+    {
+        "first_name": "Филипп", 
+        "last_name": "Сидоров"
+    }, 
+    {
+        "first_name": "Демьян", 
+        "last_name": "Соболев"
+    }, 
+    {
+        "first_name": "Клим", 
+        "last_name": "Карпов"
+    }, 
+    {
+        "first_name": "Гордей", 
+        "last_name": "Белов"
+    }, 
+    {
+        "first_name": "Валентин", 
+        "last_name": "Миллер"
+    }, 
+    {
+        "first_name": "Геннадий", 
+        "last_name": "Титов"
+    }, 
+    {
+        "first_name": "Демид", 
+        "last_name": "Львов"
+    }, 
+    {
+        "first_name": "Прохор", 
+        "last_name": "Фролов"
+    }, 
+    {
+        "first_name": "Серафим", 
+        "last_name": "Игнатьев"
+    }, 
+    {
+        "first_name": "Савва", 
+        "last_name": "Комаров"
+    }, 
+    {
+        "first_name": "Яромир", 
+        "last_name": "Прокофьев"
+    }, 
+    {
+        "first_name": "Аркадий", 
+        "last_name": "Быков"
+    }, 
+    {
+        "first_name": "Архип", 
+        "last_name": "Абрамов"
+    }, 
+    {
+        "first_name": "Тарас", 
+        "last_name": "Голубев"
+    }, 
+    {
+        "first_name": "Трофим", 
+        "last_name": "Пономарёв"
+    }
+]
