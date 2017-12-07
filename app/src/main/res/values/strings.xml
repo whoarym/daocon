@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Dao Contest</string>
-    <string name="description"><![CDATA[Simple SQL backend speed contest.\n\nSQL means manual implementation with SQLiteOpenHelper and marshalling through ContentValues. Opt switch toggles direct data marshalling for SELECT queries with no ContentValues involved.\n\nROOM uses new Google architecture component for same data model.]]></string>
+    <string name="start_button">Start</string>
+
+    <string-array name="dao_contest">
+        <item>SQL trivial</item>
+        <item>SQL optimized</item>
+        <item>ROOM trivial</item>
+        <item>ROOM optimized</item>
+    </string-array>
 </resources>

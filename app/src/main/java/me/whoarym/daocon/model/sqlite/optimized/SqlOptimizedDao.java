@@ -13,6 +13,12 @@ public class SqlOptimizedDao extends SqlDaoBase {
         super(db);
     }
 
+    @NonNull
+    @Override
+    public String getName() {
+        return "SQL optimized";
+    }
+
     @Override
     protected <T> T from(@NonNull Cursor cursor,
                          @NonNull Class<? extends T> entityClass,

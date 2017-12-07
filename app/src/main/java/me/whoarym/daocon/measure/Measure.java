@@ -12,6 +12,12 @@ class Measure {
 
     private Map<String, List<Long>> mTracks = new LinkedHashMap<>();
 
+    private final String mName;
+
+    Measure(@NonNull String name) {
+        mName = name;
+    }
+
     void track(@NonNull String event, @NonNull Runnable runnable) {
         long start = System.currentTimeMillis();
         runnable.run();
@@ -24,7 +30,8 @@ class Measure {
 
     @NonNull
     String report() {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(mName);
+        builder.append("\n\n");
 
         long total = 0L;
         for (Map.Entry<String, List<Long>> entry : mTracks.entrySet()) {

@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.Switch;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -13,6 +16,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.whoarym.daocon.measure.MeasureAsyncTask;
 import me.whoarym.daocon.measure.MeasureListener;
+import me.whoarym.daocon.model.Dao;
+import me.whoarym.daocon.model.ModelFactory;
 import me.whoarym.daocon.model.json.JsonDataContainer;
 import me.whoarym.daocon.model.room.RoomDaoDatabase;
 import me.whoarym.daocon.model.room.RoomModelFactory;
@@ -24,19 +29,12 @@ import me.whoarym.daocon.model.sqlite.trivial.SqlTrivialDao;
 
 public class MainActivity extends Activity {
 
-    @BindView(R.id.sql_opt_switch)
-    Switch mSqlSwitch;
-    @BindView(R.id.sql_progress)
-    TextView mSqlProgress;
-    @BindView(R.id.sql_result)
-    TextView mSqlResult;
-
-    @BindView(R.id.room_opt_switch)
-    Switch mRoomSwitch;
-    @BindView(R.id.room_progress)
-    TextView mRoomProgress;
-    @BindView(R.id.room_result)
-    TextView mRoomResult;
+    @BindView(R.id.dao_spinner)
+    Spinner mDaoSpinner;
+    @BindView(R.id.start_button)
+    Button mStartButton;
+    @BindView(R.id.result)
+    TextView mResult;
 
     @NonNull
     private SqlTrivialDao mSqlTrivialDao;
@@ -47,70 +45,99 @@ public class MainActivity extends Activity {
     @NonNull
     private RoomOptimizedDao mRoomOptimizedDao;
 
-    private boolean mSqlOptimized;
-    private boolean mRoomOptimized;
+    private int mSelectedDao;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initDaos();
+
+        setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.dao_contest, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mDaoSpinner.setAdapter(adapter);
+        mDaoSpinner.setOnItemSelectedListener(mDaoItemsListener);
+    }
+
+    private void initDaos() {
         mSqlTrivialDao = new SqlTrivialDao(((DaoconApp) getApplication()).getSqLiteDb());
         mSqlOptimizedDao = new SqlOptimizedDao(((DaoconApp) getApplication()).getSqLiteDb());
 
         RoomDaoDatabase roomDb = ((DaoconApp) getApplication()).getRoomDb();
         mRoomTrivialDao = new RoomTrivialDao(roomDb.getSimpleDao(), roomDb.getBookTrivialDao());
         mRoomOptimizedDao = new RoomOptimizedDao(roomDb.getSimpleDao(), roomDb.getBookOptimizedDao());
-
-        setContentView(R.layout.activity_main);
-
-        ButterKnife.bind(this);
-
-        mSqlSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> mSqlOptimized = isChecked);
-        mRoomSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> mRoomOptimized = isChecked);
     }
 
-    @OnClick(R.id.sql_start)
-    public void onSqlStartClick(View view) {
-        JsonDataContainer dataContainer =
-                new JsonDataContainer(getApplicationContext(), new SqliteModelFactory());
-        MeasureListener listener = new MeasureListener() {
-            @Override
-            public void reportProgress(int progress) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(progress).append(" / ").append(MeasureAsyncTask.COUNT);
-                mSqlProgress.setText(builder);
-            }
-
-            @Override
-            public void reportResult(@NonNull String report) {
-                mSqlProgress.setText("done!");
-                mSqlResult.setText(report);
-                view.setEnabled(true);
-            }
-        };
-        new MeasureAsyncTask(dataContainer, listener).execute(mSqlOptimized ? mSqlOptimizedDao : mSqlTrivialDao);
-        view.setEnabled(false);
+    @SuppressWarnings("unused")
+    @OnClick(R.id.start_button)
+    public void onStartClick(@NonNull Button button) {
+        mStartButton.setEnabled(false);
+        mResult.setText(null);
+        new MeasureAsyncTask(getDataContainer(), mMeasureListener).execute(getDao());
     }
 
-    @OnClick(R.id.room_start)
-    public void onRoomStartClick(View view) {
-        JsonDataContainer dataContainer =
-                new JsonDataContainer(getApplicationContext(), new RoomModelFactory());
-        MeasureListener listener = new MeasureListener() {
-            @Override
-            public void reportProgress(int progress) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(progress).append(" / ").append(MeasureAsyncTask.COUNT);
-                mRoomProgress.setText(builder);
-            }
-
-            @Override
-            public void reportResult(@NonNull String report) {
-                mRoomProgress.setText("done!");
-                mRoomResult.setText(report);
-                view.setEnabled(true);
-            }
-        };
-        new MeasureAsyncTask(dataContainer, listener).execute(mRoomOptimized ? mRoomOptimizedDao : mRoomTrivialDao);
-        view.setEnabled(false);
+    @NonNull
+    private JsonDataContainer getDataContainer() {
+        ModelFactory modelFactory;
+        switch (mSelectedDao) {
+            case 0:
+            case 1:
+                modelFactory = new SqliteModelFactory();
+                break;
+            default:
+                modelFactory = new RoomModelFactory();
+                break;
+        }
+        return new JsonDataContainer(getApplicationContext(), modelFactory);
     }
+
+    @NonNull
+    private Dao getDao() {
+        switch (mSelectedDao) {
+            case 0:
+                return mSqlTrivialDao;
+            case 1:
+                return mSqlOptimizedDao;
+            case 2:
+                return mRoomTrivialDao;
+            case 3:
+                return mRoomOptimizedDao;
+        }
+        return mSqlTrivialDao;
+    }
+
+    private AdapterView.OnItemSelectedListener mDaoItemsListener =
+            new AdapterView.OnItemSelectedListener()
+    {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            mSelectedDao = position;
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            mSelectedDao = 0;
+        }
+    };
+
+    private MeasureListener mMeasureListener = new MeasureListener() {
+        @Override
+        public void reportProgress(int progress) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(progress).append(" / ").append(MeasureAsyncTask.COUNT);
+            mStartButton.setText(builder);
+        }
+
+        @Override
+        public void reportResult(@NonNull String report) {
+            mStartButton.setEnabled(true);
+            mStartButton.setText(R.string.start_button);
+            mResult.setText(report);
+        }
+    };
 }

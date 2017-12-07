@@ -8,6 +8,9 @@ import me.whoarym.daocon.model.json.JsonDataContainer;
 
 public interface Dao {
 
+    @NonNull
+    String getName();
+
     void importData(@NonNull JsonDataContainer dataContainer);
     void clearData();
 

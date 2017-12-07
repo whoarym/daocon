@@ -28,6 +28,12 @@ public class RoomTrivialDao extends RoomDaoBase {
 
     @NonNull
     @Override
+    public String getName() {
+        return "ROOM trivial";
+    }
+
+    @NonNull
+    @Override
     public List<? extends Book> getBooks() {
         return fetchBooks(mBookDao.getBooks());
     }

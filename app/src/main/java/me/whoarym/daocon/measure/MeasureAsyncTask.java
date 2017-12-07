@@ -32,7 +32,7 @@ public class MeasureAsyncTask extends AsyncTask<Dao, Integer, Measure> {
     protected Measure doInBackground(Dao... daos) {
         Dao dao = daos[0];
 
-        Measure measure = new Measure();
+        Measure measure = new Measure(dao.getName());
 
         for (int i = 0; i < COUNT; i++) {
             measure.track("Import", () -> dao.importData(mDataContainer));

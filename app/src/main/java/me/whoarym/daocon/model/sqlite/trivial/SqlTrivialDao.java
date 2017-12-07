@@ -15,6 +15,12 @@ public class SqlTrivialDao extends SqlDaoBase {
         super(db);
     }
 
+    @NonNull
+    @Override
+    public String getName() {
+        return "SQL trivial";
+    }
+
     @Override
     protected <T> T from(@NonNull Cursor cursor,
                          @NonNull Class<? extends T> entityClass,

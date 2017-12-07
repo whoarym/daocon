@@ -23,6 +23,12 @@ public class RoomOptimizedDao extends RoomDaoBase {
 
     @NonNull
     @Override
+    public String getName() {
+        return "ROOM optimized";
+    }
+
+    @NonNull
+    @Override
     public List<? extends Book> getBooks() {
         return fetchBooks(mBookDao.getBooks());
     }
