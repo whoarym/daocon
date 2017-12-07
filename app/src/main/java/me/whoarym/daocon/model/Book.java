@@ -5,11 +5,6 @@ import android.support.annotation.Nullable;
 
 import java.util.Set;
 
-import me.whoarym.daocon.model.sqlite.SqlAuthor;
-import me.whoarym.daocon.model.sqlite.SqlOwner;
-import me.whoarym.daocon.model.sqlite.SqlPublisher;
-import me.whoarym.daocon.model.sqlite.SqlTag;
-
 public interface Book {
     int getId();
     void setId(int id);

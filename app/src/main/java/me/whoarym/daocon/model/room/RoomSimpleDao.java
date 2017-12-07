@@ -7,7 +7,10 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import me.whoarym.daocon.model.Tag;
 
 @Dao
 public abstract class RoomSimpleDao {
@@ -105,4 +108,25 @@ public abstract class RoomSimpleDao {
 
     @Query("SELECT * FROM tbl_tag ORDER BY name")
     public abstract List<RoomTag> getTags();
+
+    ///////////////////////////////////////////////////////////////////////////
+    // save book implementation
+    ///////////////////////////////////////////////////////////////////////////
+    @Query("DELETE FROM tbl_book2tag WHERE book_id = :bookId")
+    public abstract void deleteBookTagLinks(int bookId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insertBook(@NonNull RoomBook book);
+
+    @Transaction
+    public void saveBook(@NonNull RoomBook book) {
+        deleteBookTagLinks(book.getId());
+        insertBook(book);
+
+        List<RoomBook2Tag> bookTagLinks = new ArrayList<>(book.getTags().size());
+        for (Tag tag : book.getTags()) {
+            bookTagLinks.add(new RoomBook2Tag(book, tag));
+        }
+        insertBookTagLinks(bookTagLinks);
+    }
 }

@@ -15,16 +15,13 @@ import me.whoarym.daocon.model.Publisher;
 import me.whoarym.daocon.model.Tag;
 import me.whoarym.daocon.model.json.JsonDataContainer;
 
-public class RoomDao implements Dao {
+public abstract class RoomDaoBase implements Dao {
 
     @NonNull
     private final RoomSimpleDao mSimpleDao;
-    @NonNull
-    private final RoomBookDao mBookDao;
 
-    public RoomDao(@NonNull RoomSimpleDao simpleDao, @NonNull RoomBookDao bookDao) {
+    public RoomDaoBase(@NonNull RoomSimpleDao simpleDao) {
         mSimpleDao = simpleDao;
-        mBookDao = bookDao;
     }
 
     @Override
@@ -34,6 +31,9 @@ public class RoomDao implements Dao {
             for (Tag tag : book.getTags()) {
                 roomBook2Tags.add(new RoomBook2Tag(book, tag));
             }
+            // simple hack to update author adnd publisher ids
+            book.setAuthor(book.getAuthor());
+            book.setPublisher(book.getPublisher());
         }
 
         mSimpleDao.insertAll(
@@ -75,30 +75,6 @@ public class RoomDao implements Dao {
         return mSimpleDao.getTags();
     }
 
-    @NonNull
-    @Override
-    public List<? extends Book> getBooks() {
-        return fetchBooks(mBookDao.getBooks());
-    }
-
-    @NonNull
-    @Override
-    public List<? extends Book> getBooksByAuthor(@NonNull Author author) {
-        return fetchBooks(mBookDao.getBooksByAuthor(author.getId()));
-    }
-
-    @NonNull
-    @Override
-    public List<? extends Book> getBooksByPublisher(@NonNull Publisher publisher) {
-        return fetchBooks(mBookDao.getBooksByPublisher(publisher.getId()));
-    }
-
-    @NonNull
-    @Override
-    public List<? extends Book> getBooksByOwner(@NonNull Owner owner) {
-        return fetchBooks(mBookDao.getBooksByOwner(owner.getId()));
-    }
-
     @Override
     public void saveAuthor(@NonNull Author author) {
         mSimpleDao.insertAuthor((RoomAuthor) author);
@@ -121,10 +97,6 @@ public class RoomDao implements Dao {
 
     @Override
     public void saveBook(@NonNull Book book) {
-        mBookDao.saveBook((RoomBook) book);
-    }
-
-    private List<RoomBook> fetchBooks(List<RoomBookTuple> bookTuples) {
-        return RoomBookTuple.convert(bookTuples, mBookDao.getBookTags(RoomBookTuple.extractIds(bookTuples)));
+        mSimpleDao.saveBook((RoomBook) book);
     }
 }

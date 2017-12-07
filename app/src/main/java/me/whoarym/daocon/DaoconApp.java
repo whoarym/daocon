@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import me.whoarym.daocon.model.room.DaoDatabase;
+import me.whoarym.daocon.model.room.RoomDaoDatabase;
 import me.whoarym.daocon.model.sqlite.SqLiteHelper;
 
 public class DaoconApp extends Application {
@@ -14,14 +14,14 @@ public class DaoconApp extends Application {
     private SqLiteHelper mSqLiteHelper;
 
     @NonNull
-    private DaoDatabase mRoomDb;
+    private RoomDaoDatabase mRoomDb;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         mSqLiteHelper = new SqLiteHelper(this);
-        mRoomDb = Room.databaseBuilder(this, DaoDatabase.class, "room.db").build();
+        mRoomDb = Room.databaseBuilder(this, RoomDaoDatabase.class, "room.db").build();
     }
 
     @NonNull
@@ -30,7 +30,7 @@ public class DaoconApp extends Application {
     }
 
     @NonNull
-    public DaoDatabase getRoomDb() {
+    public RoomDaoDatabase getRoomDb() {
         return mRoomDb;
     }
 }
