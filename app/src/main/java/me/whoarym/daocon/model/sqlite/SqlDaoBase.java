@@ -2,7 +2,6 @@ package me.whoarym.daocon.model.sqlite;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +21,7 @@ import me.whoarym.daocon.model.Publisher;
 import me.whoarym.daocon.model.Tag;
 import me.whoarym.daocon.model.json.JsonDataContainer;
 
-public class SqlDao implements Dao {
+public abstract class SqlDaoBase implements Dao {
 
     static final String TBL_AUTHOR = "tbl_author";
     static final String TBL_BOOK = "tbl_book";
@@ -40,11 +39,8 @@ public class SqlDao implements Dao {
     @NonNull
     private final SQLiteDatabase mDb;
 
-    private final boolean mOptimized;
-
-    public SqlDao(@NonNull SQLiteDatabase db, boolean optimized) {
+    public SqlDaoBase(@NonNull SQLiteDatabase db) {
         mDb = db;
-        mOptimized = optimized;
     }
 
     @Override
@@ -187,20 +183,18 @@ public class SqlDao implements Dao {
         mDb.endTransaction();
     }
 
+    protected abstract <T> T from(@NonNull Cursor cursor,
+                                  @NonNull Class<? extends T> entityClass,
+                                  @NonNull String prefix);
+
+    protected abstract TagInfo getTagInfo(@NonNull Cursor cursor);
+
     private <T> List<T> fetch(@NonNull DataFetcher<T> dataFetcher) {
         List<T> result;
         try (Cursor cursor = dataFetcher.getCursor(mDb)) {
             result = new ArrayList<>(cursor.getCount());
             while (cursor.moveToNext()) {
-                T item;
-                if (mOptimized) {
-                    item = dataFetcher.from(cursor,"");
-                } else {
-                    ContentValues contentValues = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
-                    item = dataFetcher.from(contentValues,"");
-                }
-
+                T item = from(cursor, dataFetcher.getEntityClass(), "");
                 if (item != null) {
                     result.add(item);
                 }
@@ -231,21 +225,9 @@ public class SqlDao implements Dao {
         SparseArray<Set<Tag>> book2tag = new SparseArray<>(books.size());
         try (Cursor cursor = mDb.rawQuery(builder.toString(), null)) {
             while (cursor.moveToNext()) {
-                Integer bookId = null;
-                Tag tag;
-                if (mOptimized) {
-                    int bookIdIdx = cursor.getColumnIndexOrThrow(SqlBook.Book2TagColumns.BOOK_ID);
-                    if (!cursor.isNull(bookIdIdx)) {
-                        bookId = cursor.getInt(bookIdIdx);
-                    }
-
-                    tag = SqlTag.fetcher().from(cursor, "");
-                } else {
-                    ContentValues contentValues = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
-                    bookId = contentValues.getAsInteger(SqlBook.Book2TagColumns.BOOK_ID);
-                    tag = SqlTag.fetcher().from(contentValues, "");
-                }
+                TagInfo tagInfo = getTagInfo(cursor);
+                Integer bookId = tagInfo.mBookId;
+                Tag tag = tagInfo.mTag;
 
                 if (bookId != null && tag != null) {
                     if (book2tag.get(bookId) == null) {
@@ -268,10 +250,19 @@ public class SqlDao implements Dao {
         return books;
     }
 
+    protected static class TagInfo {
+        Integer mBookId;
+        SqlTag mTag;
+
+        public TagInfo(@Nullable Integer bookId, @NonNull SqlTag tag) {
+            mBookId = bookId;
+            mTag = tag;
+        }
+    }
+
     interface DataFetcher<T> {
         @NonNull Cursor getCursor(@NonNull SQLiteDatabase db);
         @NonNull ContentValues to(@NonNull T value);
-        @Nullable T from(@NonNull ContentValues contentValues, @NonNull String prefix);
-        @Nullable T from(@NonNull Cursor cursor, @NonNull String prefix);
+        @NonNull Class<? extends T> getEntityClass();
     }
 }

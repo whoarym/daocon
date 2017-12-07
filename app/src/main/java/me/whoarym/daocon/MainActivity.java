@@ -18,8 +18,9 @@ import me.whoarym.daocon.model.room.RoomDaoDatabase;
 import me.whoarym.daocon.model.room.RoomModelFactory;
 import me.whoarym.daocon.model.room.optimized.RoomOptimizedDao;
 import me.whoarym.daocon.model.room.trivial.RoomTrivialDao;
-import me.whoarym.daocon.model.sqlite.SqlDao;
 import me.whoarym.daocon.model.sqlite.SqliteModelFactory;
+import me.whoarym.daocon.model.sqlite.optimized.SqlOptimizedDao;
+import me.whoarym.daocon.model.sqlite.trivial.SqlTrivialDao;
 
 public class MainActivity extends Activity {
 
@@ -38,9 +39,9 @@ public class MainActivity extends Activity {
     TextView mRoomResult;
 
     @NonNull
-    private SqlDao mSqlTrivialDao;
+    private SqlTrivialDao mSqlTrivialDao;
     @NonNull
-    private SqlDao mSqlOptimizedDao;
+    private SqlOptimizedDao mSqlOptimizedDao;
     @NonNull
     private RoomTrivialDao mRoomTrivialDao;
     @NonNull
@@ -52,8 +53,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSqlTrivialDao = new SqlDao(((DaoconApp) getApplication()).getSqLiteDb(), false);
-        mSqlOptimizedDao = new SqlDao(((DaoconApp) getApplication()).getSqLiteDb(), true);
+        mSqlTrivialDao = new SqlTrivialDao(((DaoconApp) getApplication()).getSqLiteDb());
+        mSqlOptimizedDao = new SqlOptimizedDao(((DaoconApp) getApplication()).getSqLiteDb());
 
         RoomDaoDatabase roomDb = ((DaoconApp) getApplication()).getRoomDb();
         mRoomTrivialDao = new RoomTrivialDao(roomDb.getSimpleDao(), roomDb.getBookTrivialDao());

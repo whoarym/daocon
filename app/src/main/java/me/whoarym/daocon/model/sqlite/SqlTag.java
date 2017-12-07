@@ -5,11 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import me.whoarym.daocon.model.Tag;
 
-import static me.whoarym.daocon.model.sqlite.SqlDao.TBL_TAG;
+import static me.whoarym.daocon.model.sqlite.SqlDaoBase.TBL_TAG;
 
 public class SqlTag implements Tag {
     private int mId;
@@ -51,20 +50,17 @@ public class SqlTag implements Tag {
     }
 
     @NonNull
-    static SqlDao.DataFetcher<Tag> fetcher() {
+    static SqlDaoBase.DataFetcher<Tag> fetcher() {
         return DATA_FETCHER;
     }
 
-    private static final SqlDao.DataFetcher<Tag> DATA_FETCHER = new SqlDao.DataFetcher<Tag>() {
+    private static final SqlDaoBase.DataFetcher<Tag> DATA_FETCHER = new SqlDaoBase.DataFetcher<Tag>() {
         @NonNull
         @Override
         public Cursor getCursor(@NonNull SQLiteDatabase db) {
             return db.query(TBL_TAG,
                     TagColumns.PROJECTION,
-                    null,
-                    null,
-                    null,
-                    null,
+                    null, null, null, null,
                     TagColumns.NAME);
         }
 
@@ -77,36 +73,14 @@ public class SqlTag implements Tag {
             return contentValues;
         }
 
-        @Nullable
+        @NonNull
         @Override
-        public Tag from(@NonNull ContentValues contentValues, @NonNull String prefix) {
-            Integer id = contentValues.getAsInteger(prefix + TagColumns._ID);
-            if (id == null) {
-                return null;
-            }
-            SqlTag tag = new SqlTag();
-            tag.setId(id);
-            tag.setName(contentValues.getAsString(prefix + TagColumns.NAME));
-            return tag;
-        }
-
-        @Nullable
-        @Override
-        public Tag from(@NonNull Cursor cursor, @NonNull String prefix) {
-            int tagId = cursor.getColumnIndexOrThrow(prefix + TagColumns._ID);
-            int nameId = cursor.getColumnIndexOrThrow(prefix + TagColumns.NAME);
-            if (cursor.isNull(tagId)) {
-                return null;
-            }
-            SqlTag tag = new SqlTag();
-            tag.setId(cursor.getInt(tagId));
-            tag.setName(cursor.getString(nameId));
-            return tag;
+        public Class<? extends Tag> getEntityClass() {
+            return SqlTag.class;
         }
     };
 
-    interface TagColumns extends BaseColumns {
-        String PREFIX = "tag_";
+    public interface TagColumns extends BaseColumns {
         String NAME = "name";
 
         String[] PROJECTION = new String[] {

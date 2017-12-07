@@ -5,11 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import me.whoarym.daocon.model.Author;
 
-import static me.whoarym.daocon.model.sqlite.SqlDao.TBL_AUTHOR;
+import static me.whoarym.daocon.model.sqlite.SqlDaoBase.TBL_AUTHOR;
 
 public class SqlAuthor implements Author {
     private int mId;
@@ -50,11 +49,11 @@ public class SqlAuthor implements Author {
         return result;
     }
 
-    static SqlDao.DataFetcher<Author> fetcher() {
+    static SqlDaoBase.DataFetcher<Author> fetcher() {
         return DATA_FETCHER;
     }
 
-    private static SqlDao.DataFetcher<Author> DATA_FETCHER = new SqlDao.DataFetcher<Author>() {
+    private static SqlDaoBase.DataFetcher<Author> DATA_FETCHER = new SqlDaoBase.DataFetcher<Author>() {
         @NonNull
         @Override
         public Cursor getCursor(@NonNull SQLiteDatabase db) {
@@ -76,35 +75,14 @@ public class SqlAuthor implements Author {
             return contentValues;
         }
 
-        @Nullable
+        @NonNull
         @Override
-        public Author from(@NonNull ContentValues contentValues, @NonNull String prefix) {
-            Integer id = contentValues.getAsInteger(prefix + AuthorColumns._ID);
-            if (id == null) {
-                return null;
-            }
-            SqlAuthor sqlAuthor = new SqlAuthor();
-            sqlAuthor.setId(id);
-            sqlAuthor.setName(contentValues.getAsString(prefix + AuthorColumns.NAME));
-            return sqlAuthor;
-        }
-
-        @Nullable
-        @Override
-        public Author from(@NonNull Cursor cursor, @NonNull String prefix) {
-            int id = cursor.getColumnIndexOrThrow(prefix + AuthorColumns._ID);
-            if (cursor.isNull(id)) {
-                return null;
-            }
-            int name = cursor.getColumnIndexOrThrow(prefix + AuthorColumns.NAME);
-            SqlAuthor author = new SqlAuthor();
-            author.setId(cursor.getInt(id));
-            author.setName(cursor.getString(name));
-            return author;
+        public Class<? extends Author> getEntityClass() {
+            return SqlAuthor.class;
         }
     };
 
-    interface AuthorColumns extends BaseColumns {
+    public interface AuthorColumns extends BaseColumns {
         String PREFIX = "author_";
         String NAME = "name";
 

@@ -111,23 +111,23 @@ public class SqlBook implements Book {
         mOwner = (SqlOwner) owner;
     }
 
-    static SqlDao.DataFetcher<Book> fetcher() {
+    static SqlDaoBase.DataFetcher<Book> fetcher() {
         return new BookDataFetcher();
     }
 
-    static SqlDao.DataFetcher<Book> fetcher(@NonNull Author author) {
+    static SqlDaoBase.DataFetcher<Book> fetcher(@NonNull Author author) {
         return new BookDataFetcher(author);
     }
 
-    static SqlDao.DataFetcher<Book> fetcher(@NonNull Publisher publisher) {
+    static SqlDaoBase.DataFetcher<Book> fetcher(@NonNull Publisher publisher) {
         return new BookDataFetcher(publisher);
     }
 
-    static SqlDao.DataFetcher<Book> fetcher(@NonNull Owner owner) {
+    static SqlDaoBase.DataFetcher<Book> fetcher(@NonNull Owner owner) {
         return new BookDataFetcher(owner);
     }
 
-    private static class BookDataFetcher implements SqlDao.DataFetcher<Book> {
+    private static class BookDataFetcher implements SqlDaoBase.DataFetcher<Book> {
 
         private final String mQuery;
 
@@ -174,49 +174,10 @@ public class SqlBook implements Book {
             return contentValues;
         }
 
-        @Nullable
+        @NonNull
         @Override
-        public Book from(@NonNull ContentValues contentValues, @NonNull String prefix) {
-            Integer id = contentValues.getAsInteger(BookColumns.PREFIX + BookColumns._ID);
-            if (id == null) {
-                return null;
-            }
-            SqlBook book = new SqlBook();
-            book.setId(id);
-            book.setName(contentValues.getAsString(BookColumns.PREFIX + BookColumns.NAME));
-            book.setAnnotation(contentValues.getAsString(BookColumns.PREFIX + BookColumns.ANNOTATION));
-            book.setYear(contentValues.getAsInteger(BookColumns.PREFIX + BookColumns.YEAR));
-
-            book.setAuthor(SqlAuthor.fetcher().from(contentValues, SqlAuthor.AuthorColumns.PREFIX));
-            book.setPublisher(SqlPublisher.fetcher().from(contentValues, SqlPublisher.PublisherColumns.PREFIX));
-            book.setOwner(SqlOwner.fetcher().from(contentValues, SqlOwner.OwnerColumns.PREFIX));
-
-            return book;
-        }
-
-        @Nullable
-        @Override
-        public Book from(@NonNull Cursor cursor, @NonNull String prefix) {
-            int id = cursor.getColumnIndexOrThrow(BookColumns.PREFIX + BookColumns._ID);
-            if (cursor.isNull(id)) {
-                return null;
-            }
-
-            int name = cursor.getColumnIndexOrThrow(BookColumns.PREFIX + BookColumns.NAME);
-            int annotation = cursor.getColumnIndexOrThrow(BookColumns.PREFIX + BookColumns.ANNOTATION);
-            int year = cursor.getColumnIndexOrThrow(BookColumns.PREFIX + BookColumns.YEAR);
-
-            SqlBook book = new SqlBook();
-            book.setId(cursor.getInt(id));
-            book.setName(cursor.getString(name));
-            book.setAnnotation(cursor.getString(annotation));
-            book.setYear(cursor.getInt(year));
-
-            book.setAuthor(SqlAuthor.fetcher().from(cursor, SqlAuthor.AuthorColumns.PREFIX));
-            book.setPublisher(SqlPublisher.fetcher().from(cursor, SqlPublisher.PublisherColumns.PREFIX));
-            book.setOwner(SqlOwner.fetcher().from(cursor, SqlOwner.OwnerColumns.PREFIX));
-
-            return book;
+        public Class<? extends Book> getEntityClass() {
+            return SqlBook.class;
         }
     }
 
@@ -286,12 +247,12 @@ public class SqlBook implements Book {
         return contentValues;
     }
 
-    interface Book2TagColumns extends BaseColumns {
+    public interface Book2TagColumns extends BaseColumns {
         String BOOK_ID = "book_id";
         String TAG_ID = "tag_id";
     }
 
-    interface BookColumns extends BaseColumns {
+    public interface BookColumns extends BaseColumns {
         String PREFIX = "book_";
         String NAME = "name";
         String ANNOTATION = "annotation";

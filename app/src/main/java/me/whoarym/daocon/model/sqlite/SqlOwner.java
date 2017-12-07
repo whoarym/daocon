@@ -5,13 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import me.whoarym.daocon.model.Owner;
-import me.whoarym.daocon.model.Tag;
 
-import static me.whoarym.daocon.model.sqlite.SqlDao.TBL_OWNER;
-import static me.whoarym.daocon.model.sqlite.SqlDao.TBL_TAG;
+import static me.whoarym.daocon.model.sqlite.SqlDaoBase.TBL_OWNER;
 
 public class SqlOwner implements Owner {
     private int mId;
@@ -66,11 +63,11 @@ public class SqlOwner implements Owner {
     }
 
     @NonNull
-    static SqlDao.DataFetcher<Owner> fetcher() {
+    static SqlDaoBase.DataFetcher<Owner> fetcher() {
         return DATA_FETCHER;
     }
 
-    private static final SqlDao.DataFetcher<Owner> DATA_FETCHER = new SqlDao.DataFetcher<Owner>() {
+    private static final SqlDaoBase.DataFetcher<Owner> DATA_FETCHER = new SqlDaoBase.DataFetcher<Owner>() {
         @NonNull
         @Override
         public Cursor getCursor(@NonNull SQLiteDatabase db) {
@@ -93,38 +90,14 @@ public class SqlOwner implements Owner {
             return contentValues;
         }
 
-        @Nullable
+        @NonNull
         @Override
-        public Owner from(@NonNull ContentValues contentValues, @NonNull String prefix) {
-            Integer id = contentValues.getAsInteger(prefix + OwnerColumns._ID);
-            if (id == null) {
-                return null;
-            }
-            SqlOwner owner = new SqlOwner();
-            owner.setId(id);
-            owner.setFirstName(contentValues.getAsString(prefix + OwnerColumns.FIRST_NAME));
-            owner.setLastName(contentValues.getAsString(prefix + OwnerColumns.LAST_NAME));
-            return owner;
-        }
-
-        @Nullable
-        @Override
-        public Owner from(@NonNull Cursor cursor, @NonNull String prefix) {
-            int id = cursor.getColumnIndexOrThrow(prefix + OwnerColumns._ID);
-            if (cursor.isNull(id)) {
-                return null;
-            }
-            int firstName = cursor.getColumnIndexOrThrow(prefix + OwnerColumns.FIRST_NAME);
-            int lastName = cursor.getColumnIndexOrThrow(prefix + OwnerColumns.LAST_NAME);
-            SqlOwner owner = new SqlOwner();
-            owner.setId(cursor.getInt(id));
-            owner.setFirstName(cursor.getString(firstName));
-            owner.setLastName(cursor.getString(lastName));
-            return owner;
+        public Class<? extends Owner> getEntityClass() {
+            return SqlOwner.class;
         }
     };
 
-    interface OwnerColumns extends BaseColumns {
+    public interface OwnerColumns extends BaseColumns {
         String PREFIX = "owner_";
         String FIRST_NAME = "first_name";
         String LAST_NAME = "last_name";

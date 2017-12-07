@@ -5,11 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import me.whoarym.daocon.model.Publisher;
 
-import static me.whoarym.daocon.model.sqlite.SqlDao.TBL_PUBLISHER;
+import static me.whoarym.daocon.model.sqlite.SqlDaoBase.TBL_PUBLISHER;
 
 public class SqlPublisher implements Publisher {
     private int mId;
@@ -50,12 +49,12 @@ public class SqlPublisher implements Publisher {
         return result;
     }
 
-    static SqlDao.DataFetcher<Publisher> fetcher() {
+    static SqlDaoBase.DataFetcher<Publisher> fetcher() {
         return DATA_FETCHER;
     }
 
-    private static final SqlDao.DataFetcher<Publisher> DATA_FETCHER =
-            new SqlDao.DataFetcher<Publisher>() {
+    private static final SqlDaoBase.DataFetcher<Publisher> DATA_FETCHER =
+            new SqlDaoBase.DataFetcher<Publisher>() {
         @NonNull
         @Override
         public Cursor getCursor(@NonNull SQLiteDatabase db) {
@@ -77,35 +76,14 @@ public class SqlPublisher implements Publisher {
             return contentValues;
         }
 
-        @Nullable
+        @NonNull
         @Override
-        public Publisher from(@NonNull ContentValues contentValues, @NonNull String prefix) {
-            Integer id = contentValues.getAsInteger(prefix + PublisherColumns._ID);
-            if (id == null) {
-                return null;
-            }
-            SqlPublisher sqlPublisher = new SqlPublisher();
-            sqlPublisher.setId(id);
-            sqlPublisher.setName(contentValues.getAsString(prefix + PublisherColumns.NAME));
-            return sqlPublisher;
-        }
-
-        @Nullable
-        @Override
-        public Publisher from(@NonNull Cursor cursor, @NonNull String prefix) {
-            int id = cursor.getColumnIndexOrThrow(prefix + PublisherColumns._ID);
-            int name = cursor.getColumnIndexOrThrow(prefix + PublisherColumns.NAME);
-            if (cursor.isNull(id)) {
-                return null;
-            }
-            SqlPublisher publisher = new SqlPublisher();
-            publisher.setId(cursor.getInt(id));
-            publisher.setName(cursor.getString(name));
-            return publisher;
+        public Class<? extends Publisher> getEntityClass() {
+            return SqlPublisher.class;
         }
     };
 
-    interface PublisherColumns extends BaseColumns {
+    public interface PublisherColumns extends BaseColumns {
         String PREFIX = "publisher_";
         String NAME = "name";
 
