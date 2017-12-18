@@ -47,6 +47,9 @@ public class MainActivity extends Activity {
 
     private int mSelectedDao;
 
+    @Nullable
+    private MeasureAsyncTask mMeasureTask;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +81,16 @@ public class MainActivity extends Activity {
     public void onStartClick(@NonNull Button button) {
         mStartButton.setEnabled(false);
         mResult.setText(null);
-        new MeasureAsyncTask(getDataContainer(), mMeasureListener).execute(getDao());
+        mMeasureTask = new MeasureAsyncTask(getDataContainer(), mMeasureListener);
+        mMeasureTask.execute(getDao());
+    }
+
+    @Override
+    protected void onPause() {
+        // just cancel all measurements
+        mMeasureTask.cancel(true);
+        mMeasureTask = null;
+        super.onPause();
     }
 
     @NonNull
@@ -138,6 +150,7 @@ public class MainActivity extends Activity {
             mStartButton.setEnabled(true);
             mStartButton.setText(R.string.start_button);
             mResult.setText(report);
+            mMeasureTask = null;
         }
     };
 }

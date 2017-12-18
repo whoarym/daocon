@@ -2,7 +2,9 @@ package me.whoarym.daocon.measure;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import me.whoarym.daocon.model.Author;
@@ -14,18 +16,19 @@ import me.whoarym.daocon.model.Tag;
 import me.whoarym.daocon.model.json.JsonDataContainer;
 
 public class MeasureAsyncTask extends AsyncTask<Dao, Integer, Measure> {
+    private static final String TAG = "MeasureAsyncTask";
 
     public static final int COUNT = 1000;
 
     @NonNull
     private final JsonDataContainer mDataContainer;
     @NonNull
-    private final MeasureListener mListener;
+    private final WeakReference<MeasureListener> mListenerHolder;
 
     public MeasureAsyncTask(@NonNull JsonDataContainer dataContainer,
                             @NonNull MeasureListener listener) {
         mDataContainer = dataContainer;
-        mListener = listener;
+        mListenerHolder = new WeakReference<>(listener);
     }
 
     @Override
@@ -35,6 +38,10 @@ public class MeasureAsyncTask extends AsyncTask<Dao, Integer, Measure> {
         Measure measure = new Measure(dao.getName());
 
         for (int i = 0; i < COUNT; i++) {
+            if (isCancelled()) {
+                Log.d(TAG, "doInBackground(): cancelled");
+                break;
+            }
             measure.track("Import", () -> dao.importData(mDataContainer));
             measure.track("GetAuthors", () -> {
                 List<? extends Author> authors = dao.getAuthors();
@@ -59,7 +66,9 @@ public class MeasureAsyncTask extends AsyncTask<Dao, Integer, Measure> {
                 books.get(0).getOwner();
             });
             measure.track("Clear", dao::clearData);
-            publishProgress(i);
+            if (!isCancelled()) {
+                publishProgress(i);
+            }
         }
 
         return measure;
@@ -67,15 +76,18 @@ public class MeasureAsyncTask extends AsyncTask<Dao, Integer, Measure> {
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
         int val = values[0];
-        mListener.reportProgress(val);
+        MeasureListener listener = mListenerHolder.get();
+        if (listener != null) {
+            listener.reportProgress(val);
+        }
     }
 
     @Override
     protected void onPostExecute(Measure measure) {
-        super.onPostExecute(measure);
-        mListener.reportResult(measure.report());
+        MeasureListener listener = mListenerHolder.get();
+        if (listener != null) {
+            listener.reportResult(measure.report());
+        }
     }
-
 }
